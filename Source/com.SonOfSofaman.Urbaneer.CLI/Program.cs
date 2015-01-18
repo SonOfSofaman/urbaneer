@@ -19,11 +19,17 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 			do
 			{
 				Console.Write(Prompt);
-
 				string line = Console.ReadLine();
+
+				bool matched = false;
 				foreach (CommandMatcher commandMatcher in commandMatchers)
 				{
-					if (commandMatcher.ParseAndExecute(line)) break;
+					matched = commandMatcher.ParseAndExecute(line);
+					if (matched) break;
+				}
+				if (!matched)
+				{
+					Console.WriteLine("unknown command");
 				}
 
 				Console.WriteLine();

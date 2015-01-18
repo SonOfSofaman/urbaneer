@@ -5,6 +5,8 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 {
 	class Program
 	{
+		private static string Prompt = "]";
+
 		static int Main(string[] args)
 		{
 			Console.Clear();
@@ -16,7 +18,7 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 
 			do
 			{
-				Console.Write("]");
+				Console.Write(Prompt);
 
 				string line = Console.ReadLine();
 				foreach (CommandMatcher commandMatcher in commandMatchers)

@@ -3,9 +3,9 @@ using System.ComponentModel;
 
 namespace com.SonOfSofaman.Urbaneer
 {
-	public static class Extensions
+	public static class CommandShortcutExtensions
 	{
-		public static T GetEnumFromShortcut<T>(this string shortcut)
+		public static T GetEnumFromCommandShortcut<T>(this string shortcut)
 		{
 			var type = typeof(T);
 			if (!type.IsEnum) throw new InvalidOperationException();

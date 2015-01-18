@@ -103,8 +103,8 @@ namespace com.SonOfSofaman.Urbaneer
 				int w = Convert.ToInt32(match.Groups["w"].Value);
 				int h = Convert.ToInt32(match.Groups["h"].Value);
 				Rectangle area = new Rectangle(x, y, w, h);
-				ZoneType zoneType = match.Groups["zonetype"].Value.GetEnumFromShortcut<ZoneType>();
-				ZoneDensity zoneDensity = match.Groups["zonedensity"].Value.GetEnumFromShortcut<ZoneDensity>();
+				ZoneType zoneType = match.Groups["zonetype"].Value.GetEnumFromCommandShortcut<ZoneType>();
+				ZoneDensity zoneDensity = match.Groups["zonedensity"].Value.GetEnumFromCommandShortcut<ZoneDensity>();
 
 				if (this.State.Zones.Any(z => z.Area.IntersectsWith(area)))
 				{

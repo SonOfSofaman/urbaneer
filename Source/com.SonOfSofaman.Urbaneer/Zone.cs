@@ -9,7 +9,7 @@ namespace com.SonOfSofaman.Urbaneer
 		public ZoneType ZoneType { get; private set; }
 		public ZoneDensity ZoneDensity { get; private set; }
 
-		public Zone(Rectangle area, ZoneType zoneType, ZoneDensity zoneDensity)
+			public Zone(Rectangle area, ZoneType zoneType, ZoneDensity zoneDensity)
 		{
 			this.Area = area;
 			this.ZoneType = zoneType;

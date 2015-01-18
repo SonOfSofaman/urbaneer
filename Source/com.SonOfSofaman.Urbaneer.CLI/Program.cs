@@ -5,8 +5,6 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 {
 	class Program
 	{
-		private static string Prompt = "]";
-
 		static int Main(string[] args)
 		{
 			Console.Clear();
@@ -18,7 +16,7 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 
 			do
 			{
-				Console.Write(Prompt);
+				Console.Write("{0:0.00}{1}", simulator.State == null ? 0.0 : simulator.State.ElapsedSeconds, simulator.IsPaused ? "]" : ">");
 				string line = Console.ReadLine();
 
 				bool matched = false;
@@ -41,9 +39,13 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 		private static List<CommandMatcher> GetCommands(Simulator simulator)
 		{
 			const string PATTERN_EXIT = "^exit$";
+			const string PATTERN_PAUSE = "^pause";
+			const string PATTERN_RESUME = "^resume$";
 
 			List<CommandMatcher> result = new List<CommandMatcher>();
 			result.Add(new CommandMatcher(PATTERN_EXIT, (match) => { simulator.Exit(); }));
+			result.Add(new CommandMatcher(PATTERN_PAUSE, (match) => { simulator.Pause(); }));
+			result.Add(new CommandMatcher(PATTERN_RESUME, (match) => { simulator.Resume(); }));
 
 			return result;
 		}

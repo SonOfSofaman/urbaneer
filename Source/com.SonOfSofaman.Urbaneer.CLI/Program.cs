@@ -18,28 +18,29 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 			{
 				Console.Write("{0:0.00}{1}", simulator.State == null ? 0.0 : simulator.State.ElapsedSeconds, simulator.IsPaused ? "]" : ">");
 				string line = Console.ReadLine();
-
-				bool matched = false;
-				foreach (CommandMatcher commandMatcher in commandMatchers)
+				if (!String.IsNullOrWhiteSpace(line))
 				{
-					System.Text.RegularExpressions.Match match = commandMatcher.Parse(line);
-					matched = match.Success;
-					if (matched)
+					bool matched = false;
+					foreach (CommandMatcher commandMatcher in commandMatchers)
 					{
-						CommandResult result = commandMatcher.Execute(match);
-						if (!result.Success)
+						System.Text.RegularExpressions.Match match = commandMatcher.Parse(line);
+						matched = match.Success;
+						if (matched)
 						{
-							Console.WriteLine(result.Message);
+							CommandResult result = commandMatcher.Execute(match);
+							if (!result.Success)
+							{
+								Console.WriteLine(result.Message);
+							}
+							break;
 						}
-						break;
 					}
+					if (!matched)
+					{
+						Console.WriteLine("unknown command");
+					}
+					Console.WriteLine();
 				}
-				if (!matched)
-				{
-					Console.WriteLine("unknown command");
-				}
-
-				Console.WriteLine();
 			} while (simulator.IsAcceptingCommands);
 
 			return 0;

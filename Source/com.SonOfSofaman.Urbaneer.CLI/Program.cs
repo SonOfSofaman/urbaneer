@@ -48,16 +48,22 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 
 		private static List<CommandMatcher> GetCommands(Simulator simulator)
 		{
+			const string PATTERN_RANGE = "(?<x0>[0-9]+),(?<y0>[0-9]+):(?<x1>[0-9]+),(?<y1>[0-9]+)";
+			const string PATTERN_SIZE = "(?<w>[1-9][0-9]*)x(?<h>[1-9][0-9]*)";
+			const string PATTERN_POSITION = "(?<x>[0-9]+),(?<y>[0-9]+)";
+
 			const string PATTERN_EXIT = "^exit$";
 			const string PATTERN_PAUSE = "^pause";
 			const string PATTERN_RESUME = "^resume$";
 			const string PATTERN_NEW = "^new";
+			const string PATTERN_ZONE = "^zone (?<zonetype>[rci])(?<zonedensity>[012]) " + PATTERN_SIZE + " at " + PATTERN_POSITION + "$";
 
 			List<CommandMatcher> result = new List<CommandMatcher>();
 			result.Add(new CommandMatcher(PATTERN_EXIT, new CommandDelegate(simulator.Exit)));
 			result.Add(new CommandMatcher(PATTERN_PAUSE, new CommandDelegate(simulator.Pause)));
 			result.Add(new CommandMatcher(PATTERN_RESUME, new CommandDelegate(simulator.Resume)));
 			result.Add(new CommandMatcher(PATTERN_NEW, new CommandDelegate(simulator.New)));
+			result.Add(new CommandMatcher(PATTERN_ZONE, new CommandDelegate(simulator.Zone)));
 
 			return result;
 		}

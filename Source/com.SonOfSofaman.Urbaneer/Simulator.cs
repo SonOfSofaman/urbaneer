@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace com.SonOfSofaman.Urbaneer
 {
@@ -17,7 +18,7 @@ namespace com.SonOfSofaman.Urbaneer
 
 		public Simulator()
 		{
-			this.State = new State();
+			this.State = null;
 			this.IsPaused = true;
 			this.StopwatchFrequency = (double)Stopwatch.Frequency;
 			this.Stopwatch = new Stopwatch();
@@ -28,22 +29,59 @@ namespace com.SonOfSofaman.Urbaneer
 			this.Worker.Start();
 		}
 
-		public void Exit()
+		public CommandResult Exit(Match match)
 		{
+			CommandResult result = new CommandResult();
+
 			this.Stopwatch.Stop();
 			this.Working = false;
 			this.Worker.Join(1000);
 			this.Worker = null;
+			result.Success = true;
+
+			return result;
 		}
 
-		public void Pause()
+		public CommandResult Pause(Match match)
 		{
+			CommandResult result = new CommandResult();
+
 			this.IsPaused = true;
+			result.Success = true;
+
+			return result;
 		}
 
-		public void Resume()
+		public CommandResult Resume(Match match)
 		{
-			this.IsPaused = false;
+			CommandResult result = new CommandResult();
+			if (this.State == null)
+			{
+				result.Success = false;
+				result.Message = "No simulation is available. Unable to resume.";
+			}
+			else
+			{
+				result.Success = true;
+				this.IsPaused = false;
+			}
+			return result;
+		}
+
+		public CommandResult New(Match match)
+		{
+			CommandResult result = new CommandResult();
+			if (this.State == null)
+			{
+				this.State = new State();
+				result.Success = true;
+			}
+			else
+			{
+				result.Success = false;
+				result.Message = "A simulation is already in progress. UNLOAD current simulation before starting another.";
+			}
+			return result;
 		}
 
 		private void Work()

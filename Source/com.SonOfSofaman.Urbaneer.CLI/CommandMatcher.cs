@@ -15,14 +15,19 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 			this.CommandDelegate = commandDelegate;
 		}
 
-		public bool ParseAndExecute(string line)
+		public Match Parse(string line)
 		{
-			Match match = this.Regex.Match(line);
-			if (match.Success)
+			return this.Regex.Match(line);
+		}
+
+		public CommandResult Execute(Match match)
+		{
+			CommandResult commandResult = null;
+			if (this.CommandDelegate != null)
 			{
-				if (this.CommandDelegate != null) this.CommandDelegate(match);
+				commandResult = this.CommandDelegate(match);
 			}
-			return match.Success;
+			return commandResult;
 		}
 	}
 }

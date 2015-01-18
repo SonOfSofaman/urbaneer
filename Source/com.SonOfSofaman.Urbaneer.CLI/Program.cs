@@ -22,8 +22,17 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 				bool matched = false;
 				foreach (CommandMatcher commandMatcher in commandMatchers)
 				{
-					matched = commandMatcher.ParseAndExecute(line);
-					if (matched) break;
+					System.Text.RegularExpressions.Match match = commandMatcher.Parse(line);
+					matched = match.Success;
+					if (matched)
+					{
+						CommandResult result = commandMatcher.Execute(match);
+						if (!result.Success)
+						{
+							Console.WriteLine(result.Message);
+						}
+						break;
+					}
 				}
 				if (!matched)
 				{
@@ -41,11 +50,13 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 			const string PATTERN_EXIT = "^exit$";
 			const string PATTERN_PAUSE = "^pause";
 			const string PATTERN_RESUME = "^resume$";
+			const string PATTERN_NEW = "^new";
 
 			List<CommandMatcher> result = new List<CommandMatcher>();
-			result.Add(new CommandMatcher(PATTERN_EXIT, (match) => { simulator.Exit(); }));
-			result.Add(new CommandMatcher(PATTERN_PAUSE, (match) => { simulator.Pause(); }));
-			result.Add(new CommandMatcher(PATTERN_RESUME, (match) => { simulator.Resume(); }));
+			result.Add(new CommandMatcher(PATTERN_EXIT, new CommandDelegate(simulator.Exit)));
+			result.Add(new CommandMatcher(PATTERN_PAUSE, new CommandDelegate(simulator.Pause)));
+			result.Add(new CommandMatcher(PATTERN_RESUME, new CommandDelegate(simulator.Resume)));
+			result.Add(new CommandMatcher(PATTERN_NEW, new CommandDelegate(simulator.New)));
 
 			return result;
 		}

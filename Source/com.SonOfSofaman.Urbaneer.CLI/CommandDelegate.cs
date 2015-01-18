@@ -2,5 +2,5 @@
 
 namespace com.SonOfSofaman.Urbaneer.CLI
 {
-	delegate void CommandDelegate(Match match);
+	delegate CommandResult CommandDelegate(Match match);
 }

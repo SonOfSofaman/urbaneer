@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace com.SonOfSofaman.Urbaneer
 {
@@ -16,6 +17,11 @@ namespace com.SonOfSofaman.Urbaneer
 		public void Update(double deltaSeconds)
 		{
 			this.ElapsedSeconds += deltaSeconds;
+		}
+
+		public Zone GetZoneAt(int x, int y)
+		{
+			return this.Zones.FirstOrDefault(z => z.Area.Contains(x, y));
 		}
 	}
 }

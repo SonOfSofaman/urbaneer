@@ -1,0 +1,7 @@
+﻿Shows a map centered on coordinates [x,y]
+
+Usage:
+	map [x,y]
+
+Example:
+	map 5,12

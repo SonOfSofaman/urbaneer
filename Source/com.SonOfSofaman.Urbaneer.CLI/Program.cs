@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.IO;
 
 namespace com.SonOfSofaman.Urbaneer.CLI
 {
 	class Program
 	{
 		private static Simulator Simulator = new Simulator();
+		private static List<CommandMatcher> CommandMatchers = GetCommands(Simulator);
 
 		static int Main(string[] args)
 		{
 			Console.Clear();
 			Console.SetWindowSize(130, 80);
 			Console.BufferWidth = 130;
-
-			List<CommandMatcher> commandMatchers = GetCommands(Simulator);
 
 			do
 			{
@@ -22,9 +23,9 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 				if (!String.IsNullOrWhiteSpace(line))
 				{
 					bool matched = false;
-					foreach (CommandMatcher commandMatcher in commandMatchers)
+					foreach (CommandMatcher commandMatcher in Program.CommandMatchers)
 					{
-						System.Text.RegularExpressions.Match match = commandMatcher.Parse(line);
+						Match match = commandMatcher.Parse(line);
 						matched = match.Success;
 						if (matched)
 						{
@@ -53,6 +54,7 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 			const string PATTERN_SIZE = "(?<w>[1-9][0-9]*)x(?<h>[1-9][0-9]*)";
 			const string PATTERN_POSITION = "(?<x>-?[0-9]+),(?<y>-?[0-9]+)";
 
+			const string PATTERN_HELP = "^help(\\s*(?<commandverb>[^\\s]+))?$";
 			const string PATTERN_EXIT = "^exit$";
 			const string PATTERN_PAUSE = "^pause";
 			const string PATTERN_RESUME = "^resume$";
@@ -61,17 +63,59 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 			const string PATTERN_MAP = "^map " + PATTERN_POSITION + "$";
 
 			List<CommandMatcher> result = new List<CommandMatcher>();
-			result.Add(new CommandMatcher(PATTERN_EXIT, new CommandDelegate(simulator.Exit)));
-			result.Add(new CommandMatcher(PATTERN_PAUSE, new CommandDelegate(simulator.Pause)));
-			result.Add(new CommandMatcher(PATTERN_RESUME, new CommandDelegate(simulator.Resume)));
-			result.Add(new CommandMatcher(PATTERN_NEW, new CommandDelegate(simulator.New)));
-			result.Add(new CommandMatcher(PATTERN_ZONE, new CommandDelegate(simulator.Zone)));
-			result.Add(new CommandMatcher(PATTERN_MAP, new CommandDelegate(DrawMap)));
+			result.Add(new CommandMatcher(PATTERN_HELP, new CommandDelegate(ShowHelp), "help"));
+			result.Add(new CommandMatcher(PATTERN_EXIT, new CommandDelegate(simulator.Exit), "exit"));
+			result.Add(new CommandMatcher(PATTERN_PAUSE, new CommandDelegate(simulator.Pause), "pause"));
+			result.Add(new CommandMatcher(PATTERN_RESUME, new CommandDelegate(simulator.Resume), "resume"));
+			result.Add(new CommandMatcher(PATTERN_NEW, new CommandDelegate(simulator.New), "new"));
+			result.Add(new CommandMatcher(PATTERN_ZONE, new CommandDelegate(simulator.Zone), "zone"));
+			result.Add(new CommandMatcher(PATTERN_MAP, new CommandDelegate(DrawMap), "map"));
 
 			return result;
 		}
 
-		private static CommandResult DrawMap(System.Text.RegularExpressions.Match match)
+		private static CommandResult ShowHelp(Match match)
+		{
+			CommandResult result = new CommandResult();
+
+			string commandVerb = match.Groups["commandverb"].Value;
+			if (String.IsNullOrWhiteSpace(commandVerb))
+			{
+				ShowHelp("help");
+				Console.WriteLine("Other commands:");
+				foreach (CommandMatcher commandMatcher in Program.CommandMatchers)
+				{
+					Console.WriteLine(String.Format("\t{0}", commandMatcher.CommandVerb));
+				}
+			}
+			else
+			{
+				ShowHelp(commandVerb);
+			}
+
+			result.Success = true;
+
+			return result;
+		}
+
+		private static void ShowHelp(string commandVerb)
+		{
+			string filePath = String.Format("Help\\{0}.txt", commandVerb);
+			FileInfo fileInfo = new FileInfo(filePath);
+			if (fileInfo.Exists)
+			{
+				using (StreamReader reader = new StreamReader(filePath))
+				{
+					Console.WriteLine(reader.ReadToEnd());
+				}
+			}
+			else
+			{
+				Console.WriteLine("No help file available at '{0}'.", filePath);
+			}
+		}
+
+		private static CommandResult DrawMap(Match match)
 		{
 			CommandResult result = new CommandResult();
 

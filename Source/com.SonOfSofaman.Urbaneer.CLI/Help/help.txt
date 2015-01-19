@@ -1,0 +1,4 @@
+﻿Show this help text.
+
+Usage:
+	help

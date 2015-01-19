@@ -1,0 +1,27 @@
+﻿Indicates the specified area is ready for construction of a specific type of structure.
+
+Usage:
+	zone [type][density] [wxh] at [x,y]
+
+Example:
+	zone r0 4x4 at 5,12
+
+[type] may be one of the following values:
+	r - residential
+	c - commercial
+	i - industrial
+
+[density] may be one of the following values:
+	0 - low
+	1 - medium
+	2 - high
+
+[wxh] specifies the width and height of the zone.
+	The two values are separated with the letter 'x'.
+	1 <= w <= 99
+	1 <= h <= 99
+
+[x,y] specifies the NW corner at which the zone is to be placed.
+	The two values are separated with a comma.
+	-mapsize <= x <= mapsize
+	-mapsize <= y <= mapsize

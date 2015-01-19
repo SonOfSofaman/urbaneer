@@ -7,12 +7,14 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 		private string Pattern;
 		private Regex Regex;
 		public CommandDelegate CommandDelegate { get; private set; }
+		public string CommandVerb { get; private set; }
 
-		public CommandMatcher(string pattern, CommandDelegate commandDelegate)
+		public CommandMatcher(string pattern, CommandDelegate commandDelegate, string commandVerb)
 		{
 			this.Pattern = pattern;
 			this.Regex = new Regex(pattern, RegexOptions.IgnoreCase);
 			this.CommandDelegate = commandDelegate;
+			this.CommandVerb = commandVerb;
 		}
 
 		public Match Parse(string line)

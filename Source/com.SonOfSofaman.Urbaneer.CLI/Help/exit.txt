@@ -1,0 +1,4 @@
+﻿Exit the simulator and return to the operating system.
+
+Usage:
+	exit

@@ -1,4 +1,6 @@
-﻿Resumes the simulation from the paused state. Use pause to temporarily halt the simulation.
+﻿RESUME
+======
+Resumes the simulation from the paused state. Use pause to temporarily halt the simulation.
 
 Usage:
 	resume

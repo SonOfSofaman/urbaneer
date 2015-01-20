@@ -1,4 +1,12 @@
-﻿Show this help text.
+﻿HELP
+====
+Show this help text, or show the help text for the specified command.
 
 Usage:
 	help
+	help [command]
+
+Examples:
+	help
+	help zone
+	etc.

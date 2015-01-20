@@ -1,4 +1,6 @@
-﻿Shows a map centered on coordinates [x,y]
+﻿MAP
+===
+Shows a map centered on coordinates [x,y]
 
 Usage:
 	map [x,y]

@@ -1,4 +1,6 @@
-﻿Temporarily halt the simulation by ignoring the passage of real time. Use resume to restart.
+﻿PAUSE
+=====
+Temporarily halt the simulation by ignoring the passage of real time. Use resume to restart.
 
 Usage:
 	pause

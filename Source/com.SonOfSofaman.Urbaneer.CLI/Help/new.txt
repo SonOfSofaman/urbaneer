@@ -1,4 +1,6 @@
-﻿Creates a new simulation unless one is already in progress.
+﻿NEW
+===
+Creates a new simulation unless one is already in progress.
 
 Usage:
 	new

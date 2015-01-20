@@ -1,4 +1,6 @@
-﻿Exit the simulator and return to the operating system.
+﻿EXIT
+====
+Exit the simulator and return to the operating system.
 
 Usage:
 	exit

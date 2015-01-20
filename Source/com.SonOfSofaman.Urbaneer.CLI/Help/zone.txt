@@ -1,4 +1,6 @@
-﻿Indicates the specified area is ready for construction of a specific type of structure.
+﻿ZONE
+====
+Makes the specified land available for the construction of a specific type of structure.
 
 Usage:
 	zone [type][density] [wxh] at [x,y]

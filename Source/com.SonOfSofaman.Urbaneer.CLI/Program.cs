@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace com.SonOfSofaman.Urbaneer.CLI
 {
@@ -10,12 +12,19 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 		private static Simulator Simulator = new Simulator();
 		private static List<CommandMatcher> CommandMatchers = GetCommands(Simulator);
 
+		private static double StopwatchFrequency;
+		private static Stopwatch Stopwatch;
+		private static long TicksLastSample;
+		private static volatile bool Working;
+		private static Thread Worker;
+
 		static int Main(string[] args)
 		{
 			Console.Clear();
 			Console.SetWindowSize(130, 80);
 			Console.BufferWidth = 130;
 
+			InitializeTiming();
 			do
 			{
 				Console.Write("{0:0.00}{1}", Simulator.State == null ? 0.0 : Simulator.State.ElapsedSeconds, Simulator.IsPaused ? "]" : ">");
@@ -43,9 +52,29 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 					}
 					Console.WriteLine();
 				}
-			} while (Simulator.IsAcceptingCommands);
+			} while (Working);
+			TerminateTiming();
 
 			return 0;
+		}
+
+		private static void InitializeTiming()
+		{
+			StopwatchFrequency = (double)Stopwatch.Frequency;
+			Stopwatch = new Stopwatch();
+			Stopwatch.Start();
+			TicksLastSample = Stopwatch.ElapsedTicks;
+			Working = false;
+			Worker = new Thread(new ThreadStart(Work));
+			Worker.Start();
+		}
+
+		private static void TerminateTiming()
+		{
+			Stopwatch.Stop();
+			Working = false;
+			Worker.Join(1000);
+			Worker = null;
 		}
 
 		private static List<CommandMatcher> GetCommands(Simulator simulator)
@@ -64,13 +93,22 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 
 			List<CommandMatcher> result = new List<CommandMatcher>();
 			result.Add(new CommandMatcher(PATTERN_HELP, new CommandDelegate(ShowHelp), "help"));
-			result.Add(new CommandMatcher(PATTERN_EXIT, new CommandDelegate(simulator.Exit), "exit"));
+			result.Add(new CommandMatcher(PATTERN_EXIT, new CommandDelegate(Exit), "exit"));
 			result.Add(new CommandMatcher(PATTERN_PAUSE, new CommandDelegate(simulator.Pause), "pause"));
 			result.Add(new CommandMatcher(PATTERN_RESUME, new CommandDelegate(simulator.Resume), "resume"));
 			result.Add(new CommandMatcher(PATTERN_NEW, new CommandDelegate(simulator.New), "new"));
 			result.Add(new CommandMatcher(PATTERN_ZONE, new CommandDelegate(simulator.Zone), "zone"));
 			result.Add(new CommandMatcher(PATTERN_MAP, new CommandDelegate(DrawMap), "map"));
 
+			return result;
+		}
+
+		private static CommandResult Exit(Match match)
+		{
+			Working = false;
+
+			CommandResult result = new CommandResult();
+			result.Success = true;
 			return result;
 		}
 
@@ -176,6 +214,22 @@ namespace com.SonOfSofaman.Urbaneer.CLI
 			}
 
 			return result;
+		}
+
+		private static void Work()
+		{
+			Working = true;
+			do
+			{
+				long ticksThisSample = Stopwatch.ElapsedTicks;
+				long ticksDelta = ticksThisSample - TicksLastSample;
+				double deltaSeconds = (double)ticksDelta / StopwatchFrequency;
+				TicksLastSample = ticksThisSample;
+
+				Simulator.Update(deltaSeconds);
+
+				Thread.Sleep(10);
+			} while (Working);
 		}
 	}
 }

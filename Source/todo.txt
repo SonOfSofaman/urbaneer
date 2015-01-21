@@ -1,2 +1,2 @@
-[-] Move timing logic out of the simulator class and into the program class
+[x] Refactor timing logic
 [-] Implement real state developer feature

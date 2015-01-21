@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "com.SonOfSofaman.Urbaneer",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{C217BFF9-4988-434E-8907-0662B3A482DB}"
 	ProjectSection(SolutionItems) = preProject
+		concepts.txt = concepts.txt
 		todo.txt = todo.txt
 	EndProjectSection
 EndProject
